@@ -1,0 +1,22 @@
+{% extends "ads/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>{{ ad.title }}</h1>
+    <p><strong>Автор:</strong> {{ ad.user.username }}</p>
+
+    <p><strong>Описание:</strong></p>
+    <p>{{ ad.description }}</p>
+
+    {% if ad.image_url %}
+        <p><strong>Изображение:</strong></p>
+        <img src="{{ ad.image_url }}" alt="Изображение {{ ad.title }}" style="max-width:100%;">
+    {% endif %}
+
+    <p><strong>Категория:</strong> {{ ad.category }}</p>
+    <p><strong>Состояние:</strong> {{ ad.get_condition_display }}</p>
+    <p><strong>Дата создания:</strong> {{ ad.created_at }}</p>
+
+    <a href="{% url 'ads:ad_list' %}" class="btn btn-primary">Назад к списку</a>
+</div>
+{% endblock %}

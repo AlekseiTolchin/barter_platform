@@ -1,0 +1,10 @@
+{% extends "ads/base.html" %}
+{% block title %}My Blog{% endblock %}
+{% block content %}
+    <h1>My Blog</h1>
+    {% for ad in ads %}
+        <h2>
+            <a href="{{ ad.get_absolute_url }}"> {{ ad.title }}</a>
+        </h2>
+    {% endfor %}
+{% endblock %}

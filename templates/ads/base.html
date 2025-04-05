@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <link href="{% static 'css/ads.css' %}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+</head>
+<body>
+<div id="content">
+    {% block content %}
+    {% endblock %}
+</div>
+<div id="sidebar">
+    <h2>Платформа для обмена вещами</h2>
+    <hr>
+    {% if user.is_authenticated %}
+        Привет {{ user.username }}!
+    <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <a href="#" onclick="parentNode.submit();">Выйти</a>
+    </form>
+    {% else %}
+        <p>Вы не вошли</p>
+        <a href="{% url 'login' %}">Войти</a>
+    {% endif %}
+    <p>
+        <a href="{% url 'signup' %}">Зарегистрироваться</a>
+    </p>
+    <hr>
+</div>
+</body>
+</html>

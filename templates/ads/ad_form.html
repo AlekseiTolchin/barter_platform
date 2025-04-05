@@ -1,0 +1,10 @@
+{% extends "ads/base.html" %}
+
+{% block content %}
+  <h2>Создать новое объявление</h2>
+  <form method="post">
+    {% csrf_token %}  <!-- Токен для защиты от CSRF -->
+    {{ form.as_p }}  <!-- Автоматическое отображение формы -->
+    <button type="submit">Создать</button>  <!-- Кнопка отправки -->
+  </form>
+{% endblock %}
