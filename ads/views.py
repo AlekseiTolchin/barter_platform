@@ -23,6 +23,8 @@ class AdListView(ListView):
     model = Ad
     template_name = 'ads/ad_list.html'
     context_object_name = 'ads'
+    paginate_by = 2
+
 
     def get_queryset(self):
         queryset = Ad.objects.all()
@@ -41,6 +43,7 @@ class AdListView(ListView):
         if condition:
             queryset = queryset.filter(condition=condition)
 
+
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -48,6 +51,9 @@ class AdListView(ListView):
 
         categories = Ad.objects.values_list('category', flat=True).distinct()
         context['categories'] = categories
+
+        context['selected_category'] = self.request.GET.get('category', '')
+        context['selected_condition'] = self.request.GET.get('condition', '')
 
         return context
 
