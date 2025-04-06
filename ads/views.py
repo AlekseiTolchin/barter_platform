@@ -1,8 +1,10 @@
+from django.db.models import Q
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
+
 from .models import Ad
 from .forms import AdForm
 
@@ -18,12 +20,36 @@ class AdCreateView(LoginRequiredMixin, CreateView):
 
 
 class AdListView(ListView):
+    model = Ad
     template_name = 'ads/ad_list.html'
     context_object_name = 'ads'
 
     def get_queryset(self):
-        ads = Ad.objects.all()
-        return ads
+        queryset = Ad.objects.all()
+        query = self.request.GET.get('q')
+        if query:
+            queryset = queryset.filter(
+                Q(title__icontains=query) | Q(description__icontains=query)
+            )
+
+        category = self.request.GET.get('category')
+        if category:
+            queryset = queryset.filter(category=category)
+
+
+        condition = self.request.GET.get('condition')
+        if condition:
+            queryset = queryset.filter(condition=condition)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        categories = Ad.objects.values_list('category', flat=True).distinct()
+        context['categories'] = categories
+
+        return context
 
 
 class AdDetailView(DetailView):

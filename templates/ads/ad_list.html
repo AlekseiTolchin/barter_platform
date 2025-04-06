@@ -1,13 +1,74 @@
 {% extends "ads/base.html" %}
-{% block title %}My Blog{% endblock %}
+{% block title %}Список объявлений{% endblock %}
+
 {% block content %}
-    <h1>Объявления</h1>
-{% for ad in ads %}
-        <h2>
-            <a href="{{ ad.get_absolute_url }}"> {{ ad.title }}</a>
-        </h2>
+<div class="container mt-4">
+    <h1 class="mb-4">Объявления</h1>
+
+    <form method="get" class="mb-4">
+        <div class="row">
+            <!-- Поле поиска -->
+            <div class="col-md-4">
+                <input type="text" name="q" class="form-control" placeholder="Поиск по ключевым словам" value="{{ request.GET.q }}">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Поиск</button>
+            </div>
+            <div class="col-md-2">
+                <a href="{% url 'ads:ad_list' %}" class="btn btn-primary w-100">Все объявления</a>
+            </div>
+        </div>
+    </form>
+
+    <!-- Форма фильтрации -->
+
+    <form method="get" class="mb-4">
+        <div class="row">
+
+            <!-- Фильтр по категории -->
+
+            <div class="col-md-3">
+                <select name="category" class="form-control">
+                <option value="">Все категории</option>
+                {% for category in categories %}
+                    <option value="{{ category }}" {% if request.GET.category == category %}selected{% endif %}>{{ category }}</option>
+                {% endfor %}
+            </select>
+            </div>
+
+            <!-- Фильтр по состоянию товара -->
+
+            <div class="col-md-3">
+                <select name="condition" class="form-control">
+                    <option value="">Все состояния</option>
+                    <option value="new">Новый</option>
+                    <option value="used">Б/У</option>
+                </select>
+            </div>
+
+            <!-- Кнопка применения фильтров -->
+
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Фильтровать</button>
+            </div>
+            <div class="col-md-2">
+                <a href="{% url 'ads:ad_list' %}" class="btn btn-primary w-100">Сбросить</a>
+            </div>
+        </div>
+    </form>
+
+    {% for ad in ads %}
+        <div class="mb-4">
+            <a href="{{ ad.get_absolute_url }}">{{ ad.title }}</a>
+        </div>
+    {% empty %}
+        <p>Нет объявлений для отображения.</p>
     {% endfor %}
+
+    <!-- Кнопка для создания объявления -->
+
     {% if user.is_authenticated %}
         <a href="{% url 'ads:ad_form' %}" class="btn btn-success">Создать объявление</a>
     {% endif %}
+</div>
 {% endblock %}
