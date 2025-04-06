@@ -2,9 +2,12 @@
 {% block title %}My Blog{% endblock %}
 {% block content %}
     <h1>Объявления</h1>
-    {% for ad in ads %}
+{% for ad in ads %}
         <h2>
             <a href="{{ ad.get_absolute_url }}"> {{ ad.title }}</a>
         </h2>
     {% endfor %}
+    {% if user.is_authenticated %}
+        <a href="{% url 'ads:ad_form' %}" class="btn btn-success">Создать объявление</a>
+    {% endif %}
 {% endblock %}
