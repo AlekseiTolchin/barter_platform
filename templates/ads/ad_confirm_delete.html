@@ -1,0 +1,24 @@
+{% extends "ads/base.html" %}
+
+{% block title %}Удалить объявление{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Удалить объявление</h1>
+    <p>Вы действительно хотите удалить это объявление?</p>
+
+    <h2>{{ ad.title }}</h2>
+    <p><strong>Описание:</strong> {{ ad.description }}</p>
+
+    {% if ad.image_url %}
+        <p><strong>Изображение:</strong></p>
+        <img src="{{ ad.image_url }}" alt="Изображение {{ ad.title }}" style="max-width:100%; height:auto;">
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Удалить</button>
+        <a href="{% url 'ads:ad_detail' ad.pk %}" class="btn btn-secondary">Отмена</a>
+    </form>
+</div>
+{% endblock %}

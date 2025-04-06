@@ -1,4 +1,4 @@
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -36,6 +36,16 @@ class AdUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Ad
     fields = ['title', 'description', 'image_url', 'category', 'condition']
     template_name = 'ads/ad_form_update.html'
+    success_url = reverse_lazy('ads:ad_list')
+
+    def test_func(self):
+        ad = self.get_object()
+        return self.request.user == ad.user
+
+
+class AdDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Ad
+    template_name = 'ads/ad_confirm_delete.html'
     success_url = reverse_lazy('ads:ad_list')
 
     def test_func(self):
