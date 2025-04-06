@@ -1,3 +1,15 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Ad, ExchangeProposal
+
+
+@admin.register(Ad)
+class AdAdmin(admin.ModelAdmin):
+    list_display = ['title', 'created_at']
+
+
+@admin.register(ExchangeProposal)
+class ExchangeProposal(admin.ModelAdmin):
+    pass
+
+
