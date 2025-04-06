@@ -5,8 +5,8 @@ from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 
-from .models import Ad
-from .forms import AdForm
+from .models import Ad, ExchangeProposal
+from .forms import AdForm, ExchangeProposalForm
 
 class AdCreateView(LoginRequiredMixin, CreateView):
     model = Ad
@@ -83,3 +83,18 @@ class AdDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         ad = self.get_object()
         return self.request.user == ad.user
+
+
+class ExchangeProposalCreateView(LoginRequiredMixin, CreateView):
+    model = ExchangeProposal
+    form_class = ExchangeProposalForm
+    template_name = 'ads/proposal_form.html'
+    success_url = reverse_lazy('ads:ad_list')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        return super().form_valid(form)
