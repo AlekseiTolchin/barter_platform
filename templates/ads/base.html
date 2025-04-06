@@ -22,7 +22,7 @@
     </form>
     {% else %}
         <p>Вы не вошли</p>
-        <a href="{% url 'login' %}">Войти</a>
+        <a href="{% url 'login' %}?next={{ request.path }}">Войти</a>
     {% endif %}
     <p>
         <a href="{% url 'signup' %}">Зарегистрироваться</a>

@@ -1,21 +1,20 @@
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from .models import Ad
 from .forms import AdForm
 
 class AdCreateView(LoginRequiredMixin, CreateView):
-    model = Ad  # Модель, для которой создаётся объект
-    form_class = AdForm  # Форма, используемая для ввода данных
-    template_name = 'ads/ad_list.html'  # HTML-шаблон
-    success_url = reverse_lazy('ad_list')  # Перенаправление при успешном создании
+    model = Ad
+    form_class = AdForm
+    template_name = 'ads/ad_form.html'
+    success_url = reverse_lazy('ads:ad_list')
 
     def form_valid(self, form):
-        # Привязка объявления к текущему пользователю
-        form.instance.user = self.request.user  # Указываем текущего пользователя как автора
-        return super().form_valid(form)  # Сохраняем объект в базе данных
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
 
 class AdListView(ListView):
@@ -33,4 +32,12 @@ class AdDetailView(DetailView):
     context_object_name = 'ad'
 
 
+class AdUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Ad
+    fields = ['title', 'description', 'image_url', 'category', 'condition']
+    template_name = 'ads/ad_form_update.html'
+    success_url = reverse_lazy('ads:ad_list')
 
+    def test_func(self):
+        ad = self.get_object()
+        return self.request.user == ad.user
