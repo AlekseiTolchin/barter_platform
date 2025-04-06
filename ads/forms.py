@@ -41,3 +41,15 @@ class ExchangeProposalForm(forms.ModelForm):
         if user:
             self.fields['ad_sender'].queryset = Ad.objects.filter(user=user)
             self.fields['ad_receiver'].queryset = Ad.objects.exclude(user=user)
+
+
+class ExchangeProposalStatusForm(forms.ModelForm):
+    class Meta:
+        model = ExchangeProposal
+        fields = [ 'status']
+        labels = {
+            'status': 'Статус предложения',
+        }
+        widgets = {
+            'status': forms.Select(attrs={'class': 'form-control'}),
+        }

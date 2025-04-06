@@ -1,0 +1,10 @@
+{% extends "ads/base.html" %}
+
+{% block content %}
+<h2>Обновить статус предложения</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+</form>
+{% endblock %}

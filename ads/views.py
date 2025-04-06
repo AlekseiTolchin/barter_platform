@@ -1,3 +1,4 @@
+from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView
@@ -6,7 +7,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 
 from .models import Ad, ExchangeProposal
-from .forms import AdForm, ExchangeProposalForm
+from .forms import AdForm, ExchangeProposalForm, ExchangeProposalStatusForm
+
 
 class AdCreateView(LoginRequiredMixin, CreateView):
     model = Ad
@@ -98,3 +100,16 @@ class ExchangeProposalCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         return super().form_valid(form)
+
+
+class ExchangeProposalUpdateView(LoginRequiredMixin, UpdateView):
+    model = ExchangeProposal
+    form_class = ExchangeProposalStatusForm
+    template_name = 'ads/proposal_form_update.html'
+    success_url = reverse_lazy('ads:ad_list')
+
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        # if obj.ad_receiver.user != self.request.user:
+        #     raise PermissionDenied('Вы не можете менять статус этого предложения.')
+        return obj
