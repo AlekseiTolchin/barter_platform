@@ -64,11 +64,5 @@
     {% empty %}
         <p>Нет объявлений для отображения.</p>
     {% endfor %}
-
-    <!-- Кнопка для создания объявления -->
-
-    {% if user.is_authenticated %}
-        <a href="{% url 'ads:ad_form' %}" class="btn btn-success">Создать объявление</a>
-    {% endif %}
 </div>
 {% endblock %}

@@ -28,6 +28,9 @@
         <a href="{% url 'signup' %}">Регистрация</a>
     </p>
     <hr>
+    {% if user.is_authenticated %}
+        <a href="{% url 'ads:ad_form' %}" class="btn btn-success">Создать объявление</a>
+    {% endif %}
 </div>
 </body>
 </html>
