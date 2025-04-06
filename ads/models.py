@@ -80,3 +80,6 @@ class ExchangeProposal(models.Model):
 
     def __str__(self):
         return f'Предложение обмена от {self.ad_sender} - {self.ad_receiver}'
+
+    def get_absolute_url(self):
+        return reverse('ads:proposal_detail', kwargs={'pk': self.pk})

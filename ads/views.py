@@ -91,7 +91,7 @@ class ExchangeProposalCreateView(LoginRequiredMixin, CreateView):
     model = ExchangeProposal
     form_class = ExchangeProposalForm
     template_name = 'ads/proposal_form.html'
-    success_url = reverse_lazy('ads:ad_list')
+    success_url = reverse_lazy('ads:proposal_list')
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -110,6 +110,18 @@ class ExchangeProposalUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_object(self, queryset=None):
         obj = super().get_object(queryset)
-        # if obj.ad_receiver.user != self.request.user:
-        #     raise PermissionDenied('Вы не можете менять статус этого предложения.')
+        if obj.ad_receiver.user != self.request.user:
+            raise PermissionDenied('Вы не можете менять статус этого предложения.')
         return obj
+
+
+class ExchangeProposalListView(ListView):
+    model = ExchangeProposal
+    template_name = 'ads/proposal_list.html'
+    context_object_name = 'proposals'
+
+
+class ExchangeProposalView(DetailView):
+    model = ExchangeProposal
+    template_name = 'ads/proposal_detail.html'
+    context_object_name = 'proposal'

@@ -1,0 +1,16 @@
+{% extends "ads/base.html" %}
+{% block title %}Список предложений{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Предложения обмена</h1>
+
+    {% for proposal in proposals %}
+        <div class="mb-4">
+            <a href="{{ proposal.get_absolute_url }}">Предложение обмена - {{ proposal.ad_sender }} к {{ proposal.ad_receiver }}</a>
+        </div>
+    {% empty %}
+        <p>Нет предложений</p>
+    {% endfor %}
+</div>
+{% endblock %}
