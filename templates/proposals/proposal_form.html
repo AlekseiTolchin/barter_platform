@@ -4,8 +4,8 @@
 {% block content %}
 <h1>Создать предложение обмена</h1>
 <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Создать</button>
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="btn btn-primary">Создать</button>
 </form>
 {% endblock %}

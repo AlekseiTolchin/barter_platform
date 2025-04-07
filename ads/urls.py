@@ -1,5 +1,17 @@
 from django.urls import path
-from .views import AdCreateView, AdListView, AdDetailView, AdUpdateView, AdDeleteView, ExchangeProposalCreateView, ExchangeProposalUpdateView, ExchangeProposalView, ExchangeProposalListView, ExchangeProposalDeleteView
+
+from .views import (
+    AdCreateView,
+    AdListView,
+    AdDetailView,
+    AdUpdateView,
+    AdDeleteView,
+    ExchangeProposalCreateView,
+    ExchangeProposalUpdateView,
+    ExchangeProposalView,
+    ExchangeProposalListView,
+    ExchangeProposalDeleteView,
+)
 
 app_name = 'ads'
 

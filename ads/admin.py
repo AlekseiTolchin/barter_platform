@@ -11,5 +11,3 @@ class AdAdmin(admin.ModelAdmin):
 @admin.register(ExchangeProposal)
 class ExchangeProposal(admin.ModelAdmin):
     pass
-
-

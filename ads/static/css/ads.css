@@ -80,3 +80,7 @@ input[type=submit] {
     font-size: 12px;
     color: #666;
 }
+
+div.col-md-3 {
+    max-width: 22%
+}

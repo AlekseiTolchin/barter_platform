@@ -1,5 +1,7 @@
 from django import forms
+
 from .models import Ad, ExchangeProposal
+
 
 class AdForm(forms.ModelForm):
     class Meta:
@@ -19,6 +21,7 @@ class AdForm(forms.ModelForm):
             'category': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Укажите категорию'}),
             'condition': forms.Select(attrs={'class': 'form-control'}),
         }
+
 
 class ExchangeProposalForm(forms.ModelForm):
     class Meta:

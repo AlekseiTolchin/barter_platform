@@ -1,13 +1,17 @@
 from django.core.exceptions import PermissionDenied
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Q
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 
 from .models import Ad, ExchangeProposal
-from .forms import AdForm, ExchangeProposalForm, ExchangeProposalStatusForm
+from .forms import (
+    AdForm,
+    ExchangeProposalForm,
+    ExchangeProposalStatusForm,
+)
 
 
 class AdCreateView(LoginRequiredMixin, CreateView):
@@ -44,7 +48,6 @@ class AdListView(ListView):
         condition = self.request.GET.get('condition')
         if condition:
             queryset = queryset.filter(condition=condition)
-
 
         return queryset
 
@@ -134,7 +137,7 @@ class ExchangeProposalListView(ListView):
         ad_status = self.request.GET.get('status')
         if ad_status:
             queryset = queryset.filter(status=ad_status)
-        print('Query Parameter ad_sender:', self.request.GET.get('ad_sender'))
+
         return queryset
 
     def get_context_data(self, **kwargs):

@@ -1,74 +1,78 @@
 {% extends "ads/base.html" %}
 {% block title %}Список объявлений{% endblock %}
 
-
 {% block content %}
 <div class="container mt-4">
-    <h1 class="mb-4">Объявления</h1>
+  <h1 class="mb-4">Объявления</h1>
 
-    <form method="get" class="mb-4">
-        <div class="row">
+  <form method="get" class="mb-4">
+    <div class="row">
 
-            <!-- Поле поиска -->
+      <!-- Поле поиска -->
 
-            <div class="col-md-4">
-                <input type="text" name="q" class="form-control" placeholder="Поиск по ключевым словам" value="{{ request.GET.q }}">
-            </div>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary w-100">Поиск</button>
-            </div>
-            <div class="col-md-2">
-                <a href="{% url 'ads:ad_list' %}" class="btn btn-primary w-100">Все объявления</a>
-            </div>
-        </div>
-    </form>
+      <div class="col-md-4">
+        <input type="text"
+               name="q"
+               class="form-control"
+               placeholder="Поиск по ключевым словам"
+               value="{{ request.GET.q }}">
+      </div>
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">Поиск</button>
+      </div>
+      <div class="col-md-2">
+        <a href="{% url 'ads:ad_list' %}" class="btn btn-primary w-100">Все объявления</a>
+      </div>
+    </div>
+  </form>
 
-    <!-- Форма фильтрации -->
+  <!-- Форма фильтрации -->
 
-    <form method="get" class="mb-4">
-        <div class="row">
+  <form method="get" class="mb-4">
+    <div class="row">
 
-            <!-- Фильтр по категории -->
+      <!-- Фильтр по категории -->
 
-            <div class="col-md-3">
-                <select name="category" class="form-control">
-                    <option value="">Все категории</option>
-                        {% for category in categories %}
-                            <option value="{{ category }}" {% if selected_category == category %}selected{% endif %}>
-                                {{ category }}
-                            </option>
-                        {% endfor %}
-</select>
-            </div>
+      <div class="col-md-3">
+        <select name="category" class="form-control">
+          <option value="">Все категории</option>
+          {% for category in categories %}
+            <option value="{{ category }}" {% if selected_category == category %}selected{% endif %}>
+            {{ category }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
 
-            <!-- Фильтр по состоянию товара -->
+      <!-- Фильтр по состоянию товара -->
 
-            <div class="col-md-3">
-                <select name="condition" class="form-control">
-                    <option value="">Все состояния</option>
-                    <option value="new" {% if selected_condition == "new" %}selected{% endif %}>Новый</option>
-                    <option value="used" {% if selected_condition == "used" %}selected{% endif %}>Б/У</option>
-                </select>
-            </div>
+      <div class="col-md-3">
+        <select name="condition" class="form-control">
+          <option value="">Все состояния</option>
+          <option value="new" {% if selected_condition == "new" %}selected{% endif %}>Новый</option>
+          <option value="used" {% if selected_condition == "used" %}selected{% endif %}>Б/У</option>
+        </select>
+      </div>
 
-            <!-- Кнопка применения фильтров -->
+      <!-- Кнопка применения фильтров -->
 
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary w-100">Фильтровать</button>
-            </div>
-            <div class="col-md-2">
-                <a href="{% url 'ads:ad_list' %}" class="btn btn-primary w-100">Сбросить</a>
-            </div>
-        </div>
-    </form>
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">Фильтровать</button>
+      </div>
+      <div class="col-md-2">
+        <a href="{% url 'ads:ad_list' %}" class="btn btn-primary w-100">Сбросить</a>
+      </div>
+    </div>
+  </form>
 
-    {% for ad in ads %}
-        <div class="mb-4">
-            <a href="{{ ad.get_absolute_url }}">{{ ad.title }}</a>
-        </div>
-    {% empty %}
-        <p>Нет объявлений</p>
-    {% endfor %}
-    {% include 'pagination.html' with page=posts %}
+  {% for ad in ads %}
+    <div class="mb-4">
+    <a href="{{ ad.get_absolute_url }}">{{ ad.title }}</a>
+  </div>
+  {% empty %}
+    <p>Нет объявлений</p>
+  {% endfor %}
+
+  {% include 'pagination.html' with page=posts %}
 </div>
 {% endblock %}

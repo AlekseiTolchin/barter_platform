@@ -2,16 +2,16 @@
 {% block content %}
 
 <div class="container mt-4">
-    <p><strong>Объявление отправителя:</strong> {{ proposal.ad_sender }}</p>
-    <p><strong>Объявление получателя:</strong> {{ proposal.ad_receiver }}</p>
-    <p><strong>Коментарий:</strong> {{ proposal.comment }}</p>
-    <p><strong>Статус:</strong> {{ proposal.get_status_display }}</p>
+  <p><strong>Объявление отправителя:</strong> {{ proposal.ad_sender }}</p>
+  <p><strong>Объявление получателя:</strong> {{ proposal.ad_receiver }}</p>
+  <p><strong>Коментарий:</strong> {{ proposal.comment }}</p>
+  <p><strong>Статус:</strong> {{ proposal.get_status_display }}</p>
 
-    {% if user.is_authenticated and proposal.ad_receiver.user == user %}
+  {% if user.is_authenticated and proposal.ad_receiver.user == user %}
     <a href="{% url 'ads:proposal_update' proposal.pk %}" class="btn btn-warning">Редактировать</a>
-    {% endif %}
-    {% if user.is_authenticated and proposal.ad_sender.user == user %}
+  {% endif %}
+  {% if user.is_authenticated and proposal.ad_sender.user == user %}
     <a href="{% url 'ads:proposal_delete' proposal.pk %}" class="btn btn-warning">Удалить</a>
-    {% endif %}
+  {% endif %}
 </div>
 {% endblock %}

@@ -2,42 +2,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{% block title %}{% endblock %}</title>
-    <link href="{% static 'css/ads.css' %}" rel="stylesheet">
-    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+  <title>{% block title %}{% endblock %}</title>
+  <link href="{% static 'css/ads.css' %}" rel="stylesheet">
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
 </head>
 <body>
-<div id="content">
+  <div id="content">
     {% block content %}
     {% endblock %}
-</div>
-<div id="sidebar">
+  </div>
+  <div id="sidebar">
     <h2>Платформа для обмена вещами</h2>
     <hr>
     {% if user.is_authenticated %}
-        Привет {{ user.username }}!
-    <form action="{% url 'logout' %}" method="post">
+      Привет {{ user.username }}!
+      <form action="{% url 'logout' %}" method="post">
         {% csrf_token %}
         <a href="#" onclick="parentNode.submit();">Выйти</a>
-    </form>
+      </form>
     {% else %}
-        <p>Вы не вошли</p>
-        <a href="{% url 'login' %}?next={{ request.path }}">Войти</a>
+      <p>Вы не вошли</p>
+      <a href="{% url 'login' %}?next={{ request.path }}">Войти</a>
     {% endif %}
     <p>
-        <a href="{% url 'signup' %}">Регистрация</a>
+      <a href="{% url 'signup' %}">Регистрация</a>
     </p>
     <p>
-        <a href="{% url 'ads:ad_list' %}">Посмотреть все объявления</a>
+      <a href="{% url 'ads:ad_list' %}">Посмотреть все объявления</a>
     </p>
     <p>
-        <a href="{% url 'ads:proposal_list' %}">Посмотреть все предложения обмена</a>
+      <a href="{% url 'ads:proposal_list' %}">Посмотреть все предложения обмена</a>
     </p>
     <hr>
     {% if user.is_authenticated %}
-        <a href="{% url 'ads:ad_form' %}" class="btn btn-success">Создать объявление</a>
-        <a href="{% url 'ads:proposal_create' %}" class="btn btn-success">Создать предожение обмена</a>
+      <a href="{% url 'ads:ad_form' %}" class="btn btn-success">Создать объявление</a>
+      <a href="{% url 'ads:proposal_create' %}" class="btn btn-success">Создать предожение обмена</a>
     {% endif %}
-</div>
+  </div>
 </body>
 </html>
