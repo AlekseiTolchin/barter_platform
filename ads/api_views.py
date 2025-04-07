@@ -6,8 +6,8 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Ad
-from .serializers import AdSerializer, UserSerializer
+from .models import Ad, ExchangeProposal
+from .serializers import AdSerializer, UserSerializer, ExchangeProposalSerializer
 
 
 User = get_user_model()
@@ -126,8 +126,10 @@ class AdListCreateView(APIView):
         description='Получить все объявления',
         request=None,
         responses={
-            200: OpenApiResponse(response=AdSerializer(many=True), description='Объявления успешно получены'),
-            400: OpenApiResponse(description='Неверные данные')
+            200: OpenApiResponse(
+                response=AdSerializer(many=True),
+                description='Объявления успешно получены'
+            ),
         }
     )
     def get(self, request):
@@ -154,3 +156,27 @@ class AdListCreateView(APIView):
             serializer.save(user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ExchangeProposalListCreate(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    @extend_schema(
+        tags=['Предложения обмена'],
+        summary='Получить все предложения обмена',
+        description='Получить все предложения обмена',
+        request=None,
+        responses={
+            200: OpenApiResponse(
+                response=ExchangeProposalSerializer(many=True),
+                description='Предложения успешно получены',
+            ),
+        }
+    )
+    def get(self, request):
+        paginator = PageNumberPagination()
+        paginator.page_size = 5
+        exchange_proposals = ExchangeProposal.objects.all()
+        page = paginator.paginate_queryset(exchange_proposals, request)
+        serializer = ExchangeProposalSerializer(page, many=True)
+        return Response(serializer.data)
