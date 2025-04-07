@@ -229,3 +229,44 @@ class ExchangeProposalDeleteUpdate(APIView):
                 {'detail': 'Объявление с указанным ID не найдено.'},
                 status=status.HTTP_404_NOT_FOUND
             )
+
+    @extend_schema(
+        tags=['Предложения обмена'],
+        summary='Обновить статус предложение обмена',
+        description='Обновление статуса предложения обмена',
+        request=ExchangeProposalSerializer,
+        responses={
+            200: OpenApiResponse(
+                response=ExchangeProposalSerializer,
+                description='Статус предложения успешно обновлен'
+            ),
+        }
+    )
+    def patch(self, request, pk):
+        allowed_field = 'status'
+        try:
+            exchange_proposal = ExchangeProposal.objects.get(pk=pk)
+            if request.user != exchange_proposal.ad_receiver.user:
+                return Response(
+                    {'detail': 'Вы не можете обновить статус предложения.'},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+
+            if len(request.data) != 1 or allowed_field not in request.data:
+                return Response(
+                    {'detail': f'Вы можете обновить только поле: {allowed_field}.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            serializer = ExchangeProposalSerializer(exchange_proposal, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        except ExchangeProposal.DoesNotExist:
+            return Response(
+                {'detail': 'Предложение с указанным ID не найдено.'},
+                status=status.HTTP_404_NOT_FOUND
+            )
