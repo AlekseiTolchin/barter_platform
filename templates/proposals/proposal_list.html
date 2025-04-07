@@ -5,6 +5,57 @@
 <div class="container mt-4">
     <h1 class="mb-4">Предложения обмена</h1>
 
+    <form method="get" class="mb-4">
+        <div class="row">
+
+<!--             Фильтр по отправителю-->
+
+            <div class="col-md-3">
+                <select name="ad_sender" class="form-control">
+                    <option value="">Все отправители</option>
+                        {% for sender in ad_senders %}
+                            <option value="{{ sender }}" {% if selected_sender == sender %}selected{% endif %}>
+                                {{ sender }}
+                            </option>
+                        {% endfor %}
+                </select>
+            </div>
+
+            <!--             Фильтр по получателю-->
+
+            <div class="col-md-3">
+                <select name="ad_receiver" class="form-control">
+                    <option value="">Все получатели</option>
+                        {% for receiver in ad_receivers %}
+                            <option value="{{ receiver }}" {% if selected_receiver == receiver %}selected{% endif %}>
+                                {{ receiver }}
+                            </option>
+                        {% endfor %}
+                </select>
+            </div>
+
+            <!-- Фильтр по статусу предложения -->
+
+            <div class="col-md-3">
+                <select name="status" class="form-control">
+                    <option value="">Все статусы </option>
+                    <option value="pending" {% if selected_status == "pending" %}selected{% endif %}>Ожидает</option>
+                    <option value="accepted" {% if selected_status == "accepted" %}selected{% endif %}>Принято</option>
+                    <option value="rejected" {% if selected_status == "rejected" %}selected{% endif %}>Отклонено</option>
+                </select>
+            </div>
+
+            <!-- Кнопка применения фильтров -->
+
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Фильтровать</button>
+            </div>
+            <div class="col-md-2">
+                <a href="{% url 'ads:proposal_list' %}" class="btn btn-primary w-100">Сбросить</a>
+            </div>
+        </div>
+    </form>
+
     {% for proposal in proposals %}
         <div class="mb-4">
             <a href="{{ proposal.get_absolute_url }}">Предложение обмена - {{ proposal.ad_sender }} к {{ proposal.ad_receiver }}</a>

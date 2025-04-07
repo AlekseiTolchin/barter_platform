@@ -120,6 +120,37 @@ class ExchangeProposalListView(ListView):
     template_name = 'proposals/proposal_list.html'
     context_object_name = 'proposals'
 
+    def get_queryset(self):
+        queryset = ExchangeProposal.objects.all()
+
+        ad_sender = self.request.GET.get('ad_sender')
+        if ad_sender:
+            queryset = queryset.filter(ad_sender=ad_sender)
+
+        ad_receiver = self.request.GET.get('ad_receiver')
+        if ad_receiver:
+            queryset = queryset.filter(ad_receiver=ad_receiver)
+
+        ad_status = self.request.GET.get('status')
+        if ad_status:
+            queryset = queryset.filter(status=ad_status)
+        print('Query Parameter ad_sender:', self.request.GET.get('ad_sender'))
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        senders = ExchangeProposal.objects.values_list('ad_sender', flat=True).distinct()
+        receivers = ExchangeProposal.objects.values_list('ad_receiver', flat=True).distinct()
+
+        context['ad_senders'] = [str(sender) for sender in senders if sender]
+        context['ad_receivers'] = [str(receiver) for receiver in receivers if receiver]
+
+        context['selected_sender'] = self.request.GET.get('ad_sender', '')
+        context['selected_status'] = self.request.GET.get('status', '')
+        context['selected_receiver'] = self.request.GET.get('ad_receiver', '')
+
+        return context
+
 
 class ExchangeProposalView(DetailView):
     model = ExchangeProposal
