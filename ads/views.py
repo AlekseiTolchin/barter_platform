@@ -90,7 +90,7 @@ class AdDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 class ExchangeProposalCreateView(LoginRequiredMixin, CreateView):
     model = ExchangeProposal
     form_class = ExchangeProposalForm
-    template_name = 'ads/proposal_form.html'
+    template_name = 'proposals/proposal_form.html'
     success_url = reverse_lazy('ads:proposal_list')
 
     def get_form_kwargs(self):
@@ -105,7 +105,7 @@ class ExchangeProposalCreateView(LoginRequiredMixin, CreateView):
 class ExchangeProposalUpdateView(LoginRequiredMixin, UpdateView):
     model = ExchangeProposal
     form_class = ExchangeProposalStatusForm
-    template_name = 'ads/proposal_form_update.html'
+    template_name = 'proposals/proposal_form_update.html'
     success_url = reverse_lazy('ads:ad_list')
 
     def get_object(self, queryset=None):
@@ -117,19 +117,19 @@ class ExchangeProposalUpdateView(LoginRequiredMixin, UpdateView):
 
 class ExchangeProposalListView(ListView):
     model = ExchangeProposal
-    template_name = 'ads/proposal_list.html'
+    template_name = 'proposals/proposal_list.html'
     context_object_name = 'proposals'
 
 
 class ExchangeProposalView(DetailView):
     model = ExchangeProposal
-    template_name = 'ads/proposal_detail.html'
+    template_name = 'proposals/proposal_detail.html'
     context_object_name = 'proposal'
 
 
 class ExchangeProposalDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = ExchangeProposal
-    template_name = 'ads/proposal_confirm_delete.html'
+    template_name = 'proposals/proposal_confirm_delete.html'
     context_object_name = 'proposal'
     success_url = reverse_lazy('ads:proposal_list')
 
