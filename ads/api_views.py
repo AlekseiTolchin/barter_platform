@@ -77,3 +77,40 @@ class UpdateAdView(APIView):
                 {'detail': 'Объявление с указанным ID не найдено.'},
                 status=status.HTTP_404_NOT_FOUND
             )
+
+
+class DeleteAdView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        tags=['Объявления'],
+        summary='Удалить объявление',
+        description='Удаление объявления',
+        request=AdSerializer,
+        responses={
+            201: OpenApiResponse(response=AdSerializer, description='Объявление успешно удалено'),
+            400: OpenApiResponse(description='Неверные данные')
+        }
+    )
+
+    def delete(self, request, pk):
+        try:
+            ad = Ad.objects.get(pk=pk)
+
+            if ad.user != request.user:
+                return Response(
+                    {'detail': 'Вы не можете удалить чужое объявление.'},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+
+            ad.delete()
+            return Response(
+                {'detail': "Объявление успешно удалено."},
+                status=status.HTTP_204_NO_CONTENT
+            )
+
+        except Ad.DoesNotExist:
+            return Response(
+                {'detail': "Объявление с указанным ID не найдено."},
+                status=status.HTTP_404_NOT_FOUND
+        )
