@@ -7,7 +7,7 @@ from .models import Ad
 class AdSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ad
-        fields = ['user', 'title', 'description', 'image_url', 'category', 'condition', 'created_at']
+        fields = ['id', 'user', 'title', 'description', 'image_url', 'category', 'condition', 'created_at']
         read_only_fields = ['id', 'user', 'created_at']
 
 

@@ -1,7 +1,8 @@
 from django.contrib.auth import get_user_model
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -114,3 +115,42 @@ class DeleteAdView(APIView):
                 {'detail': "Объявление с указанным ID не найдено."},
                 status=status.HTTP_404_NOT_FOUND
         )
+
+
+class AdListCreateView(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    @extend_schema(
+        tags=['Объявления'],
+        summary='Получить все объявления',
+        description='Получить все объявления',
+        request=None,
+        responses={
+            200: OpenApiResponse(response=AdSerializer(many=True), description='Объявления успешно получены'),
+            400: OpenApiResponse(description='Неверные данные')
+        }
+    )
+    def get(self, request):
+        paginator = PageNumberPagination()
+        paginator.page_size = 5
+        ads = Ad.objects.all()
+        page = paginator.paginate_queryset(ads, request)
+        serializer = AdSerializer(page, many=True)
+        return Response(serializer.data)
+
+    @extend_schema(
+        tags=['Объявления'],
+        summary='Создать новое объявление',
+        description='Создание нового объявления',
+        request=AdSerializer,
+        responses={
+            201: OpenApiResponse(response=AdSerializer, description='Объявление успешно создано'),
+            400: OpenApiResponse(description='Неверные данные')
+        }
+    )
+    def post(self, request):
+        serializer = AdSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
