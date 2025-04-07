@@ -8,6 +8,7 @@ urlpatterns = [
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('auth/', include('accounts.api_urls')),
+    path('api/', include('ads.api_urls')),
     path('', include('ads.urls', namespace='ads')),
     path('accounts/', include('accounts.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
