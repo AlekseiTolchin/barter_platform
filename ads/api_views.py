@@ -180,3 +180,20 @@ class ExchangeProposalListCreate(APIView):
         page = paginator.paginate_queryset(exchange_proposals, request)
         serializer = ExchangeProposalSerializer(page, many=True)
         return Response(serializer.data)
+
+    @extend_schema(
+        tags=['Предложения обмена'],
+        summary='Создать новое предложение обмена',
+        description='Создание нового предложения обмена',
+        request=ExchangeProposalSerializer,
+        responses={
+            201: OpenApiResponse(response=ExchangeProposalSerializer, description='Предложение успешно создано'),
+            400: OpenApiResponse(description='Неверные данные')
+        }
+    )
+    def post(self, request):
+        serializer = ExchangeProposalSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
