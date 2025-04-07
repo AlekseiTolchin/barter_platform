@@ -125,3 +125,14 @@ class ExchangeProposalView(DetailView):
     model = ExchangeProposal
     template_name = 'ads/proposal_detail.html'
     context_object_name = 'proposal'
+
+
+class ExchangeProposalDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = ExchangeProposal
+    template_name = 'ads/proposal_confirm_delete.html'
+    context_object_name = 'proposal'
+    success_url = reverse_lazy('ads:proposal_list')
+
+    def test_func(self):
+        proposal = self.get_object()
+        return self.request.user == proposal.ad_sender.user

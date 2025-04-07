@@ -10,8 +10,8 @@
     {% if user.is_authenticated and proposal.ad_receiver.user == user %}
     <a href="{% url 'ads:proposal_update' proposal.pk %}" class="btn btn-warning">Редактировать</a>
     {% endif %}
+    {% if user.is_authenticated and proposal.ad_sender.user == user %}
+    <a href="{% url 'ads:proposal_delete' proposal.pk %}" class="btn btn-warning">Удалить</a>
+    {% endif %}
 </div>
-
-
-
 {% endblock %}

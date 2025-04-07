@@ -1,0 +1,22 @@
+{% extends "ads/base.html" %}
+
+{% block title %}Удалить объявление{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Удалить предложение</h1>
+    <p>Вы действительно хотите удалить это предложение?</p>
+
+    <p><strong>Объявление отправителя:</strong> {{ proposal.ad_sender }}</p>
+    <p><strong>Объявление получателя:</strong> {{ proposal.ad_receiver }}</p>
+    <p><strong>Коментарий:</strong> {{ proposal.comment }}</p>
+    <p><strong>Статус:</strong> {{ proposal.get_status_display }}</p>
+
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Удалить</button>
+        <a href="{% url 'ads:proposal_detail' proposal.pk %}" class="btn btn-secondary">Отмена</a>
+    </form>
+</div>
+{% endblock %}

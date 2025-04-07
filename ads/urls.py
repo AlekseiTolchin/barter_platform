@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import AdCreateView, AdListView, AdDetailView, AdUpdateView, AdDeleteView, ExchangeProposalCreateView, ExchangeProposalUpdateView, ExchangeProposalView, ExchangeProposalListView
+from .views import AdCreateView, AdListView, AdDetailView, AdUpdateView, AdDeleteView, ExchangeProposalCreateView, ExchangeProposalUpdateView, ExchangeProposalView, ExchangeProposalListView, ExchangeProposalDeleteView
 
 app_name = 'ads'
 
@@ -13,4 +13,5 @@ urlpatterns = [
     path('proposal/<int:pk>/update/', ExchangeProposalUpdateView.as_view(), name='proposal_update'),
     path('proposals/<int:pk>/', ExchangeProposalView.as_view(), name='proposal_detail'),
     path('proposals/', ExchangeProposalListView.as_view(), name='proposal_list'),
+    path('proposals/<int:pk>/delete/', ExchangeProposalDeleteView.as_view(), name='proposal_delete'),
 ]
