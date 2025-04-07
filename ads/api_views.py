@@ -106,7 +106,6 @@ class DeleteAdView(APIView):
 
             ad.delete()
             return Response(
-                {'detail': "Объявление успешно удалено."},
                 status=status.HTTP_204_NO_CONTENT
             )
 
@@ -197,3 +196,36 @@ class ExchangeProposalListCreate(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ExchangeProposalDeleteUpdate(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        tags=['Предложения обмена'],
+        summary='Удалить предложение обмена',
+        description='Удаление предложения обмена',
+        request=ExchangeProposalSerializer,
+        responses={
+            204: OpenApiResponse(response=ExchangeProposalSerializer, description='Предложение успешно удалено'),
+        }
+    )
+    def delete(self, request, pk):
+        try:
+            exchange_proposal = ExchangeProposal.objects.get(pk=pk)
+            if request.user != exchange_proposal.ad_sender.user:
+                return Response(
+                    {'detail': 'Вы не можете удалить чужое предложение.'},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+
+            exchange_proposal.delete()
+            return Response(
+                    status=status.HTTP_204_NO_CONTENT
+                )
+
+        except ExchangeProposal.DoesNotExist:
+            return Response(
+                {'detail': 'Объявление с указанным ID не найдено.'},
+                status=status.HTTP_404_NOT_FOUND
+            )
