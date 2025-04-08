@@ -71,7 +71,7 @@ class AdDetailView(DetailView):
 
 class AdUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Ad
-    fields = ['title', 'description', 'image_url', 'category', 'condition']
+    form_class = AdForm
     template_name = 'ads/ad_form_update.html'
     success_url = reverse_lazy('ads:ad_list')
 
