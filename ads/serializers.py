@@ -11,15 +11,14 @@ class AdSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'user', 'created_at']
 
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['username']
-
-
 class ExchangeProposalSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExchangeProposal
         fields = ['id', 'ad_sender', 'ad_receiver', 'comment', 'status', 'created_at']
         read_only_fields = ['created_at']
 
+
+class SpecialExchangeProposalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ExchangeProposal
+        fields = ['status']

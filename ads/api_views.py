@@ -1,13 +1,18 @@
 from django.contrib.auth import get_user_model
+
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 from rest_framework import status
+from rest_framework.exceptions import NotFound
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Ad, ExchangeProposal
-from .serializers import AdSerializer, UserSerializer, ExchangeProposalSerializer
+from .serializers import (
+    AdSerializer,
+    ExchangeProposalSerializer,
+    SpecialExchangeProposalSerializer,
+)
 
 
 User = get_user_model()
@@ -19,8 +24,7 @@ class AdListCreateView(APIView):
     @extend_schema(
         tags=['Объявления'],
         summary='Получить все объявления',
-        description='Получить все объявления',
-        request=None,
+        description='Получение всех объявлений',
         responses={
             200: OpenApiResponse(
                 response=AdSerializer(many=True),
@@ -29,17 +33,16 @@ class AdListCreateView(APIView):
         }
     )
     def get(self, request):
-        paginator = PageNumberPagination()
-        paginator.page_size = 5
         ads = Ad.objects.all()
-        page = paginator.paginate_queryset(ads, request)
-        serializer = AdSerializer(page, many=True)
+        if not ads.exists():
+            raise NotFound('Объявления не найдены.')
+        serializer = AdSerializer(ads, many=True)
         return Response(serializer.data)
 
     @extend_schema(
         tags=['Объявления'],
         summary='Создать новое объявление',
-        description='Создание нового объявления',
+        description='Только авторизованный пользователь может создать объявление.',
         request=AdSerializer,
         responses={
             201: OpenApiResponse(response=AdSerializer, description='Объявление успешно создано'),
@@ -57,6 +60,16 @@ class AdListCreateView(APIView):
 class AdUpdateDeleteView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
+    @staticmethod
+    def get_object(pk, user):
+        try:
+            ad = Ad.objects.get(pk=pk)
+            if ad.user != user:
+                raise PermissionError('Вы не можете выполнить это действие с чужим объявлением.')
+            return ad
+        except Ad.DoesNotExist:
+            raise Ad.DoesNotExist('Объявление с указанным ID не найдено.')
+
     @extend_schema(
         tags=['Объявления'],
         summary='Редактировать объявление',
@@ -69,55 +82,36 @@ class AdUpdateDeleteView(APIView):
     )
     def patch(self, request, pk):
         try:
-            ad = Ad.objects.get(pk=pk)
-            if ad.user != request.user:
-                return Response(
-                    {'detail': 'Вы не можете редактировать чужое объявление.'},
-                    status=status.HTTP_403_FORBIDDEN
-                )
+            ad = self.get_object(pk, request.user)
             serializer = AdSerializer(ad, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
-
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        except Ad.DoesNotExist:
-            return Response(
-                {'detail': 'Объявление с указанным ID не найдено.'},
-                status=status.HTTP_404_NOT_FOUND
-            )
+        except Ad.DoesNotExist as e:
+            return Response({'detail': str(e)}, status=status.HTTP_404_NOT_FOUND)
+        except PermissionError as e:
+            return Response({'detail': str(e)}, status=status.HTTP_403_FORBIDDEN)
 
     @extend_schema(
         tags=['Объявления'],
         summary='Удалить объявление',
         description='Удаление объявления',
-        request=AdSerializer,
         responses={
-            201: OpenApiResponse(response=AdSerializer, description='Объявление успешно удалено'),
-            400: OpenApiResponse(description='Неверные данные')
+            204: OpenApiResponse(description='Объявление успешно удалено'),
+            403: OpenApiResponse(description='Доступ запрещён'),
+            404: OpenApiResponse(description='Объявление с указанным ID не найдено')
         }
     )
     def delete(self, request, pk):
         try:
-            ad = Ad.objects.get(pk=pk)
-
-            if ad.user != request.user:
-                return Response(
-                    {'detail': 'Вы не можете удалить чужое объявление.'},
-                    status=status.HTTP_403_FORBIDDEN
-                )
-
+            ad = self.get_object(pk, request.user)
             ad.delete()
-            return Response(
-                status=status.HTTP_204_NO_CONTENT
-            )
-
-        except Ad.DoesNotExist:
-            return Response(
-                {'detail': "Объявление с указанным ID не найдено."},
-                status=status.HTTP_404_NOT_FOUND
-        )
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Ad.DoesNotExist as e:
+            return Response({'detail': str(e)}, status=status.HTTP_404_NOT_FOUND)
+        except PermissionError as e:
+            return Response({'detail': str(e)}, status=status.HTTP_403_FORBIDDEN)
 
 
 class ExchangeProposalListCreate(APIView):
@@ -129,18 +123,12 @@ class ExchangeProposalListCreate(APIView):
         description='Получить все предложения обмена',
         request=None,
         responses={
-            200: OpenApiResponse(
-                response=ExchangeProposalSerializer(many=True),
-                description='Предложения успешно получены',
-            ),
+            200: OpenApiResponse(description='Предложения успешно получены',),
         }
     )
     def get(self, request):
-        paginator = PageNumberPagination()
-        paginator.page_size = 5
         exchange_proposals = ExchangeProposal.objects.all()
-        page = paginator.paginate_queryset(exchange_proposals, request)
-        serializer = ExchangeProposalSerializer(page, many=True)
+        serializer = ExchangeProposalSerializer(exchange_proposals, many=True)
         return Response(serializer.data)
 
     @extend_schema(
@@ -167,10 +155,12 @@ class ExchangeProposalDeleteUpdate(APIView):
     @extend_schema(
         tags=['Предложения обмена'],
         summary='Удалить предложение обмена',
-        description='Удаление предложения обмена',
+        description='Удалить предложения обмена может пользователь, создавший это предложение',
         request=ExchangeProposalSerializer,
         responses={
-            204: OpenApiResponse(response=ExchangeProposalSerializer, description='Предложение успешно удалено'),
+            204: OpenApiResponse(description='Предложение успешно удалено'),
+            403: OpenApiResponse(description='Доступ запрещён'),
+            404: OpenApiResponse(description='Объявление с указанным ID не найдено')
         }
     )
     def delete(self, request, pk):
@@ -196,13 +186,14 @@ class ExchangeProposalDeleteUpdate(APIView):
     @extend_schema(
         tags=['Предложения обмена'],
         summary='Обновить статус предложение обмена',
-        description='Обновление статуса предложения обмена',
-        request=ExchangeProposalSerializer,
+        description='Обновить статус предложения может пользователь, получивший предложение',
+        request=SpecialExchangeProposalSerializer,
         responses={
-            200: OpenApiResponse(
-                response=ExchangeProposalSerializer,
-                description='Статус предложения успешно обновлен'
-            ),
+            200: OpenApiResponse(description='Статус предложения успешно обновлен'),
+            400: OpenApiResponse(description='Неверные данные'),
+            404: OpenApiResponse(description='Объявление с указанным ID не найдено'),
+            403: OpenApiResponse(description='Доступ запрещён'),
+
         }
     )
     def patch(self, request, pk):
