@@ -30,6 +30,7 @@ class AdListView(ListView):
     template_name = 'ads/ad_list.html'
     context_object_name = 'ads'
     paginate_by = 2
+    ordering = ['id']
 
 
     def get_queryset(self):
