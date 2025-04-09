@@ -21,16 +21,14 @@ services:
       POSTGRES_DB: barter
       POSTGRES_HOST: postgres
       POSTGRES_PORT: "5432"
-      DJANGO_SUPERUSER_EMAIL: admin@test.com
-      DJANGO_SUPERUSER_USERNAME: admin
-      DJANGO_SUPERUSER_PASSWORD: admin
     expose:
       - "8000"
     ports:
       - "8000:8000"
     depends_on:
-      - postgres
-    command: sh -c " sleep 10 &&
+      postgres:
+        condition: service_healthy
+    command: sh -c "
       python manage.py runserver 0.0.0.0:8000"
 
   postgres:
@@ -46,3 +44,8 @@ services:
       - ./test_data:/test_data
     ports:
       - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -h postgres -p 5432 -U admin" ]
+      interval: 5s
+      timeout: 10s
+      retries: 5
