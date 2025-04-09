@@ -56,7 +56,8 @@ class AdListView(ListView):
         context = super().get_context_data(**kwargs)
 
         categories = Ad.objects.values_list('category', flat=True).distinct()
-        context['categories'] = categories
+        unique_categories = set(categories)
+        context['categories'] = list(unique_categories)
 
         context['selected_category'] = self.request.GET.get('category', '')
         context['selected_condition'] = self.request.GET.get('condition', '')
