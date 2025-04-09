@@ -25,7 +25,6 @@ class AdForm(forms.ModelForm):
 
 class ExchangeProposalForm(forms.ModelForm):
     class Meta:
-        url = forms.URLField(assume_scheme="https")
         model = ExchangeProposal
         fields = ['ad_sender', 'ad_receiver', 'comment']
         labels = {

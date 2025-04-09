@@ -33,7 +33,7 @@ class AdListCreateView(APIView):
         }
     )
     def get(self, request):
-        ads = Ad.objects.all()
+        ads = Ad.objects.all().order_by('id')
         if not ads.exists():
             raise NotFound('Объявления не найдены.')
         serializer = AdSerializer(ads, many=True)
