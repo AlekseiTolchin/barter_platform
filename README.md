@@ -2,6 +2,9 @@
 
 Монолитное веб-приложение на Django для организации обмена вещами между пользователями.
 
+![скриншот сайта](https://github.com/AlekseiTolchin/barter_platform/blob/main/screenshots/site.png)
+
+![скриншот сайта](https://github.com/AlekseiTolchin/barter_platform/blob/main/screenshots/api.png)
 
 ## Как запустить проект
 
@@ -27,7 +30,7 @@ docker-compose up
 После запуска веб-сервисов с помощью Docker Сompose в новом терминале, не выключая сайт, загрузить в БД тестовые данные:
 
 ```
-docker compose exec postgres psql -U admin barter -f /test_data/db_test_data.sql
+docker-compose exec postgres psql -U admin barter -f /test_data/db_test_data.sql
 ```
 В базе данных создадуться несколько объявлений от разных пользователей. И пользователи:
 
@@ -38,7 +41,7 @@ docker compose exec postgres psql -U admin barter -f /test_data/db_test_data.sql
 Накатить миграции с помощью команды:
 
 ```
-docker compose run --rm web python manage.py migrate
+docker-compose run --rm web python manage.py migrate
 ```
 
 Запустить тесты с помощью команды:
@@ -51,5 +54,5 @@ docker-compose exec web pytest
 
 - http://127.0.0.1:8000/admin/ - `админ-панель`
 - http://127.0.0.1:8000/api/docs/ - `документация API`  
-- http://127.0.0.1:8000/ - `Главная страница`
+- http://127.0.0.1:8000/ - `главная страница`
 
