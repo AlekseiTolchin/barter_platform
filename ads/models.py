@@ -39,6 +39,7 @@ class Ad(models.Model):
     class Meta:
         verbose_name = 'Объявление'
         verbose_name_plural = 'Объявления'
+        ordering = ['-created_at']
 
     def __str__(self):
         return self.title
@@ -77,6 +78,11 @@ class ExchangeProposal(models.Model):
         verbose_name='Дата создания',
         auto_now_add=True,
     )
+
+    class Meta:
+        verbose_name = 'Предложение'
+        verbose_name_plural = 'Предложения'
+        ordering = ['-created_at']
 
     def __str__(self):
         return f'Предложение обмена от {self.ad_sender} - {self.ad_receiver}'
