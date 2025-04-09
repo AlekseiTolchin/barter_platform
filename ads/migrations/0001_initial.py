@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                 ('image_url', models.URLField(blank=True, null=True, verbose_name='URL изображения')),
                 ('category', models.CharField(max_length=50, verbose_name='Категория')),
                 ('condition', models.CharField(choices=[('new', 'Новый'), ('used', 'Б/У')], max_length=50, verbose_name='Состояние')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Дата созданиея')),
+                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='ads', to=settings.AUTH_USER_MODEL, verbose_name='Пользователь')),
             ],
             options={

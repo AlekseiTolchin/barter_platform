@@ -32,7 +32,7 @@ class Ad(models.Model):
         choices=(('new', 'Новый'), ('used', 'Б/У')),
     )
     created_at = models.DateTimeField(
-        verbose_name='Дата созданиея',
+        verbose_name='Дата создания',
         auto_now_add=True
     )
 

@@ -31,9 +31,6 @@ services:
     depends_on:
       - postgres
     command: sh -c " sleep 10 &&
-      python manage.py makemigrations &&
-      python manage.py migrate &&
-      python manage.py createsuperuser --noinput || true &&
       python manage.py runserver 0.0.0.0:8000"
 
   postgres:
@@ -46,5 +43,6 @@ services:
       POSTGRES_DB: barter
     volumes:
       - db_data:/var/lib/postgresql/data
+      - ./test_data:/test_data
     ports:
       - "5432:5432"
