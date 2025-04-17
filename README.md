@@ -32,7 +32,7 @@ docker-compose up
 ```
 docker-compose exec postgres psql -U admin barter -f /test_data/db_test_data.sql
 ```
-В базе данных создадуться несколько объявлений от разных пользователей. И пользователи:
+В базе данных создадутся несколько объявлений от разных пользователей. И пользователи:
 
 - admin (superuser) - пароль `admin`
 - alex - пароль `alex12345`
